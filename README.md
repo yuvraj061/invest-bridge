@@ -73,7 +73,7 @@ flowchart TD
     Frontend[InvestBridge Web App (HTML/CSS/JS)]
     Auth[Firebase Authentication]
     Firestore[Firebase Firestore]
-    
+
     subgraph "Frontend Modules"
         Main[main.js]
         AuthModule[auth.js]
@@ -89,7 +89,7 @@ flowchart TD
     User <--> Frontend
     Frontend <--> Auth
     Frontend <--> Firestore
-    
+
     Main --> AuthModule
     Main --> PostsModule
     Main --> ConnectionsModule
@@ -389,7 +389,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ## 📞 Contact
-For questions, suggestions, or collaboration, please contact [Your Name](mailto:your.email@example.com).
+For questions, suggestions, or collaboration, please contact [Yuvraj Singh](mailto:xerxes6122@gmail.com).
 
 ---
 
