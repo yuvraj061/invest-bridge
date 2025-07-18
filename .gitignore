@@ -1,0 +1,39 @@
+# Node.js dependencies (if you ever use npm/yarn)
+node_modules/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Firebase local emulators and logs
+.firebase/
+firebase-debug.log
+
+# Environment variables (if you use them)
+.env
+.env.local
+
+# VSCode settings (optional)
+.vscode/
+
+# Log files
+*.log
+
+# Build output (if you ever use a build tool)
+dist/
+build/
+out/
+
+# Mac system files
+Icon?
+
+# SASS/SCSS cache
+.sass-cache/
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage directory used by tools like istanbul
+coverage/ 

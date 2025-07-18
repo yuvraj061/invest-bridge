@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvestBridge - Connect Investors & Entrepreneurs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./public/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>InvestBridge</h1>
+            <p>Connecting Investors with Entrepreneurs for Mutual Growth</p>
+        </div>
+
+        <div id="authSection" class="auth-section">
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="showAuthTab('register')">Register</button>
+            </div>
+
+            <div id="loginForm" class="auth-form">
+                <h2 style="text-align: center; margin-bottom: 20px;">Login</h2>
+                <form onsubmit="login(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password:</label>
+                        <input type="password" id="loginPassword" required placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                </form>
+            </div>
+
+            <div id="registerForm" class="auth-form" style="display: none;">
+                <h2 style="text-align: center; margin-bottom: 20px;">Register</h2>
+                <form onsubmit="register(event)">
+                    <div class="form-group">
+                        <label for="registerName">Full Name:</label>
+                        <input type="text" id="registerName" required placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email:</label>
+                        <input type="email" id="registerEmail" required placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password:</label>
+                        <input type="password" id="registerPassword" required placeholder="Password (min 6 chars)">
+                    </div>
+                    <div class="form-group">
+                        <label for="userType">User Type:</label>
+                        <select id="userType" required>
+                            <option value="">Select Type</option>
+                            <option value="investor">Investor</option>
+                            <option value="entrepreneur">Entrepreneur</option>
+                            <option value="banker">Banker</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPhone">Phone Number:</label>
+                        <input type="tel" id="registerPhone" required placeholder="10-digit phone number">
+                    </div>
+                    <button type="submit" class="btn">Register</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="dashboard" class="dashboard">
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div>
+                        <h3 id="userName">User Name</h3>
+                        <p id="userRole">Role</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="dashboard-tabs">
+                <button class="dashboard-tab active" onclick="showDashboardTab('overview')" title="View your dashboard overview">Overview</button>
+                <button class="dashboard-tab" onclick="showDashboardTab('browse')" title="Browse opportunities">Browse</button>
+                <button class="dashboard-tab" onclick="showDashboardTab('post')" title="Create a new post">Post</button>
+                <button class="dashboard-tab" onclick="showDashboardTab('connections')" title="View your connections">Connections</button>
+                <button class="dashboard-tab" onclick="showDashboardTab('evaluation')" title="Project evaluation metrics">Evaluation</button>
+                <button class="dashboard-tab" onclick="showDashboardTab('advisor')" title="Business advisory services">Advisor</button>
+                <button class="dashboard-tab" onclick="showDashboardTab('queries')" title="Q&A and knowledge base">Queries</button>
+            </div>
+
+            <div id="overviewContent" class="dashboard-content active">
+                <h2>Dashboard Overview</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Total Connections</h3>
+                        <p id="totalConnections">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Active Proposals</h3>
+                        <p id="activeProposals">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Success Rate</h3>
+                        <p id="successRate">0%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="browseContent" class="dashboard-content">
+                <h2>Browse Opportunities</h2>
+                <div id="browseList" class="grid">
+                    </div>
+            </div>
+
+            <div id="postContent" class="dashboard-content">
+                <h2>Create New Post</h2>
+                <div class="post-form">
+                    <h3>Post Details</h3>
+                    <form onsubmit="createPost(event)">
+                        <div class="form-group">
+                            <label for="postTitle">Title:</label>
+                            <input type="text" id="postTitle" required placeholder="e.g. Innovative Startup Idea">
+                        </div>
+                        <div class="form-group">
+                            <label for="postDescription">Description:</label>
+                            <textarea id="postDescription" rows="4" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;" required placeholder="Describe your idea or proposal..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="postAmount">Amount (₹):</label>
+                            <input type="number" id="postAmount" min="1" required placeholder="Amount in ₹">
+                        </div>
+                        <div class="form-group">
+                            <label for="postCategory">Category:</label>
+                            <select id="postCategory" required onchange="updateSubcategories()">
+                                <option value="">Select Category</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="subcategoryGroup" style="display: none;">
+                            <label for="postSubcategory">Subcategory:</label>
+                            <select id="postSubcategory" required>
+                                <option value="">Select Subcategory</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="categoryInfo" style="display: none;">
+                            <div class="category-info-card">
+                                <div class="category-header">
+                                    <span id="categoryIcon" class="category-icon"></span>
+                                    <div>
+                                        <h4 id="categoryName"></h4>
+                                        <p id="categoryDescription"></p>
+                                    </div>
+                                </div>
+                                <div class="investment-range">
+                                    <strong>Typical Investment Range:</strong>
+                                    <span id="investmentRange"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="postTypeGroup" style="display: none;">
+                            <label for="postType">Post Type:</label>
+                            <select id="postType">
+                                <option value="">Select Type</option>
+                                <option value="loan">Loan Offer</option>
+                                <option value="advisory">Advisory</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn">Create Post</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="connectionsContent" class="dashboard-content">
+                <h2>My Connections</h2>
+                <div id="connectionsList" class="grid">
+                    </div>
+            </div>
+
+            <!-- Project Evaluation Tab -->
+            <div id="evaluationContent" class="dashboard-content">
+                <h2>Project Evaluation Metrics</h2>
+                <div class="evaluation-container">
+                    <div class="evaluation-tabs">
+                        <button class="eval-tab active" onclick="showEvaluationTab('scoring')">Investment Scoring</button>
+                        <button class="eval-tab" onclick="showEvaluationTab('risk')">Risk Assessment</button>
+                        <button class="eval-tab" onclick="showEvaluationTab('diligence')">Due Diligence</button>
+                        <button class="eval-tab" onclick="showEvaluationTab('valuation')">Valuation</button>
+                    </div>
+                    
+                    <div id="scoringContent" class="eval-content active">
+                        <h3>Investment Scoring System</h3>
+                        <div class="scoring-form">
+                            <form onsubmit="evaluateProject(event)">
+                                <div class="form-group">
+                                    <label>Market Potential (25%)</label>
+                                    <div class="scoring-factors">
+                                        <div class="factor">
+                                            <label>Market Size (0-10):</label>
+                                            <input type="number" id="marketSize" min="0" max="10" placeholder="Score">
+                                        </div>
+                                        <div class="factor">
+                                            <label>Growth Rate (0-8):</label>
+                                            <input type="number" id="growthRate" min="0" max="8" placeholder="Score">
+                                        </div>
+                                        <div class="factor">
+                                            <label>Competition (0-7):</label>
+                                            <input type="number" id="competition" min="0" max="7" placeholder="Score">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Team Capability (20%)</label>
+                                    <div class="scoring-factors">
+                                        <div class="factor">
+                                            <label>Experience (0-10):</label>
+                                            <input type="number" id="experience" min="0" max="10" placeholder="Score">
+                                        </div>
+                                        <div class="factor">
+                                            <label>Skills (0-6):</label>
+                                            <input type="number" id="skills" min="0" max="6" placeholder="Score">
+                                        </div>
+                                        <div class="factor">
+                                            <label>Commitment (0-4):</label>
+                                            <input type="number" id="commitment" min="0" max="4" placeholder="Score">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn">Evaluate Project</button>
+                            </form>
+                        </div>
+                        <div id="evaluationResults" class="evaluation-results" style="display: none;">
+                            <!-- Results will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="riskContent" class="eval-content">
+                        <h3>Risk Assessment</h3>
+                        <div class="risk-assessment">
+                            <form onsubmit="assessRisk(event)">
+                                <div class="risk-categories">
+                                    <div class="risk-category">
+                                        <h4>Market Risk (30%)</h4>
+                                        <input type="range" id="marketRisk" min="0" max="100" value="50">
+                                        <span id="marketRiskValue">50%</span>
+                                    </div>
+                                    <div class="risk-category">
+                                        <h4>Technology Risk (25%)</h4>
+                                        <input type="range" id="technologyRisk" min="0" max="100" value="50">
+                                        <span id="technologyRiskValue">50%</span>
+                                    </div>
+                                    <div class="risk-category">
+                                        <h4>Team Risk (20%)</h4>
+                                        <input type="range" id="teamRisk" min="0" max="100" value="50">
+                                        <span id="teamRiskValue">50%</span>
+                                    </div>
+                                    <div class="risk-category">
+                                        <h4>Financial Risk (15%)</h4>
+                                        <input type="range" id="financialRisk" min="0" max="100" value="50">
+                                        <span id="financialRiskValue">50%</span>
+                                    </div>
+                                    <div class="risk-category">
+                                        <h4>Operational Risk (10%)</h4>
+                                        <input type="range" id="operationalRisk" min="0" max="100" value="50">
+                                        <span id="operationalRiskValue">50%</span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn">Assess Risk</button>
+                            </form>
+                        </div>
+                        <div id="riskResults" class="risk-results" style="display: none;">
+                            <!-- Risk results will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="diligenceContent" class="eval-content">
+                        <h3>Due Diligence Checklist</h3>
+                        <div class="diligence-checklist">
+                            <div class="checklist-category">
+                                <h4>Legal Due Diligence</h4>
+                                <div class="checklist-items">
+                                    <label><input type="checkbox" data-category="legal" data-item="Company registration and compliance"> Company registration and compliance</label>
+                                    <label><input type="checkbox" data-category="legal" data-item="Intellectual property rights"> Intellectual property rights</label>
+                                    <label><input type="checkbox" data-category="legal" data-item="Employment contracts and policies"> Employment contracts and policies</label>
+                                    <label><input type="checkbox" data-category="legal" data-item="Regulatory compliance"> Regulatory compliance</label>
+                                    <label><input type="checkbox" data-category="legal" data-item="Litigation history"> Litigation history</label>
+                                    <label><input type="checkbox" data-category="legal" data-item="Tax compliance"> Tax compliance</label>
+                                </div>
+                            </div>
+                            
+                            <div class="checklist-category">
+                                <h4>Financial Due Diligence</h4>
+                                <div class="checklist-items">
+                                    <label><input type="checkbox" data-category="financial" data-item="Financial statements audit"> Financial statements audit</label>
+                                    <label><input type="checkbox" data-category="financial" data-item="Cash flow analysis"> Cash flow analysis</label>
+                                    <label><input type="checkbox" data-category="financial" data-item="Revenue recognition policies"> Revenue recognition policies</label>
+                                    <label><input type="checkbox" data-category="financial" data-item="Debt and liabilities review"> Debt and liabilities review</label>
+                                    <label><input type="checkbox" data-category="financial" data-item="Asset valuation"> Asset valuation</label>
+                                    <label><input type="checkbox" data-category="financial" data-item="Financial projections validation"> Financial projections validation</label>
+                                </div>
+                            </div>
+                            
+                            <button onclick="generateDiligenceReport()" class="btn">Generate Report</button>
+                        </div>
+                        <div id="diligenceResults" class="diligence-results" style="display: none;">
+                            <!-- Due diligence results will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="valuationContent" class="eval-content">
+                        <h3>Investment Valuation</h3>
+                        <div class="valuation-form">
+                            <form onsubmit="calculateValuation(event)">
+                                <div class="form-group">
+                                    <label for="revenue">Current Revenue (₹):</label>
+                                    <input type="number" id="revenue" required placeholder="Enter current revenue">
+                                </div>
+                                <div class="form-group">
+                                    <label for="growthRate">Annual Growth Rate (%):</label>
+                                    <input type="number" id="growthRate" required placeholder="Enter growth rate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profitMargin">Profit Margin (%):</label>
+                                    <input type="number" id="profitMargin" required placeholder="Enter profit margin">
+                                </div>
+                                <div class="form-group">
+                                    <label for="marketMultiple">Market Multiple:</label>
+                                    <input type="number" id="marketMultiple" required placeholder="Enter market multiple">
+                                </div>
+                                <button type="submit" class="btn">Calculate Valuation</button>
+                            </form>
+                        </div>
+                        <div id="valuationResults" class="valuation-results" style="display: none;">
+                            <!-- Valuation results will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Advisor Tab -->
+            <div id="advisorContent" class="dashboard-content">
+                <h2>Business Advisory Services</h2>
+                <div class="advisor-container">
+                    <div class="advisor-tabs">
+                        <button class="adv-tab active" onclick="showAdvisorTab('services')">Browse Services</button>
+                        <button class="adv-tab" onclick="showAdvisorTab('book')">Book Consultation</button>
+                        <button class="adv-tab" onclick="showAdvisorTab('myBookings')">My Bookings</button>
+                        <button class="adv-tab" onclick="showAdvisorTab('becomeAdvisor')">Become an Advisor</button>
+                    </div>
+                    
+                    <div id="servicesContent" class="adv-content active">
+                        <h3>Available Advisory Services</h3>
+                        <div id="advisorServicesList" class="services-grid">
+                            <!-- Services will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="bookContent" class="adv-content">
+                        <h3>Book a Consultation</h3>
+                        <div class="booking-form">
+                            <form onsubmit="bookConsultation(event)">
+                                <div class="form-group">
+                                    <label for="serviceCategory">Service Category:</label>
+                                    <select id="serviceCategory" required onchange="updateAdvisorList()">
+                                        <option value="">Select Service Category</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="consultationType">Consultation Type:</label>
+                                    <select id="consultationType" required>
+                                        <option value="">Select Type</option>
+                                        <option value="oneTime">One-Time Consultation</option>
+                                        <option value="ongoing">Ongoing Advisory</option>
+                                        <option value="project">Project-Based</option>
+                                        <option value="emergency">Emergency Consultation</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="consultationDate">Preferred Date:</label>
+                                    <input type="datetime-local" id="consultationDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="consultationDuration">Duration (hours):</label>
+                                    <input type="number" id="consultationDuration" min="1" max="8" value="2" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="consultationDescription">Description:</label>
+                                    <textarea id="consultationDescription" rows="4" required placeholder="Describe your business challenge or what you need advice on..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="budget">Budget (₹):</label>
+                                    <input type="number" id="budget" required placeholder="Your budget for this consultation">
+                                </div>
+                                <button type="submit" class="btn">Find Advisors</button>
+                            </form>
+                        </div>
+                        <div id="advisorMatches" class="advisor-matches" style="display: none;">
+                            <!-- Matched advisors will be shown here -->
+                        </div>
+                    </div>
+                    
+                    <div id="myBookingsContent" class="adv-content">
+                        <h3>My Consultation Bookings</h3>
+                        <div id="myBookingsList" class="bookings-list">
+                            <!-- Bookings will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="becomeAdvisorContent" class="adv-content">
+                        <h3>Become a Business Advisor</h3>
+                        <div class="advisor-registration">
+                            <form onsubmit="registerAsAdvisor(event)">
+                                <div class="form-group">
+                                    <label for="advisorName">Full Name:</label>
+                                    <input type="text" id="advisorName" required placeholder="Your full name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="advisorEmail">Email:</label>
+                                    <input type="email" id="advisorEmail" required placeholder="Your email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="advisorPhone">Phone:</label>
+                                    <input type="tel" id="advisorPhone" required placeholder="Your phone number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="advisorExpertise">Primary Expertise:</label>
+                                    <select id="advisorExpertise" required>
+                                        <option value="">Select Expertise</option>
+                                        <option value="businessStrategy">Business Strategy</option>
+                                        <option value="financialAdvisory">Financial Advisory</option>
+                                        <option value="technologyConsulting">Technology Consulting</option>
+                                        <option value="marketingStrategy">Marketing Strategy</option>
+                                        <option value="operationsOptimization">Operations Optimization</option>
+                                        <option value="legalCompliance">Legal & Compliance</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="advisorExperience">Experience Level:</label>
+                                    <select id="advisorExperience" required>
+                                        <option value="">Select Experience Level</option>
+                                        <option value="junior">Junior Advisor (2-5 years)</option>
+                                        <option value="senior">Senior Advisor (5-10 years)</option>
+                                        <option value="expert">Expert Advisor (10+ years)</option>
+                                        <option value="partner">Partner Level (15+ years)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="advisorBio">Bio:</label>
+                                    <textarea id="advisorBio" rows="4" required placeholder="Tell us about your experience and expertise..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="advisorCertifications">Certifications:</label>
+                                    <input type="text" id="advisorCertifications" placeholder="Relevant certifications (comma-separated)">
+                                </div>
+                                <button type="submit" class="btn">Register as Advisor</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Queries Tab -->
+            <div id="queriesContent" class="dashboard-content">
+                <h2>Q&A & Knowledge Base</h2>
+                <div class="queries-container">
+                    <div class="queries-tabs">
+                        <button class="qry-tab active" onclick="showQueriesTab('ask')">Ask Question</button>
+                        <button class="qry-tab" onclick="showQueriesTab('browse')">Browse Questions</button>
+                        <button class="qry-tab" onclick="showQueriesTab('knowledge')">Knowledge Base</button>
+                        <button class="qry-tab" onclick="showQueriesTab('myQueries')">My Queries</button>
+                    </div>
+                    
+                    <div id="askContent" class="qry-content active">
+                        <h3>Ask a Business Question</h3>
+                        <div class="ask-form">
+                            <form onsubmit="submitQuery(event)">
+                                <div class="form-group">
+                                    <label for="queryTitle">Question Title:</label>
+                                    <input type="text" id="queryTitle" required placeholder="Brief, descriptive title for your question">
+                                </div>
+                                <div class="form-group">
+                                    <label for="queryCategory">Category:</label>
+                                    <select id="queryCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="businessStrategy">Business Strategy</option>
+                                        <option value="funding">Funding & Investment</option>
+                                        <option value="technology">Technology</option>
+                                        <option value="marketing">Marketing & Sales</option>
+                                        <option value="legal">Legal & Compliance</option>
+                                        <option value="operations">Operations</option>
+                                        <option value="startup">Startup & Entrepreneurship</option>
+                                        <option value="scaling">Scaling & Growth</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="queryDescription">Detailed Description:</label>
+                                    <textarea id="queryDescription" rows="6" required placeholder="Provide detailed context about your question..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="queryTags">Tags:</label>
+                                    <input type="text" id="queryTags" placeholder="Relevant tags (comma-separated)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="queryUrgency">Urgency:</label>
+                                    <select id="queryUrgency" required>
+                                        <option value="low">Low - General question</option>
+                                        <option value="normal" selected>Normal - Standard timeline</option>
+                                        <option value="high">High - Need answer soon</option>
+                                        <option value="urgent">Urgent - Critical decision</option>
+                                    </select>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="expertRequested">
+                                    <label for="expertRequested">Request expert response</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="anonymousQuery">
+                                    <label for="anonymousQuery">Post anonymously</label>
+                                </div>
+                                <button type="submit" class="btn">Submit Question</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div id="browseContent" class="qry-content">
+                        <h3>Browse Questions</h3>
+                        <div class="search-filters">
+                            <input type="text" id="querySearch" placeholder="Search questions..." onkeyup="searchQueries()">
+                            <select id="queryCategoryFilter" onchange="searchQueries()">
+                                <option value="">All Categories</option>
+                                <option value="businessStrategy">Business Strategy</option>
+                                <option value="funding">Funding & Investment</option>
+                                <option value="technology">Technology</option>
+                                <option value="marketing">Marketing & Sales</option>
+                                <option value="legal">Legal & Compliance</option>
+                                <option value="operations">Operations</option>
+                                <option value="startup">Startup & Entrepreneurship</option>
+                                <option value="scaling">Scaling & Growth</option>
+                            </select>
+                            <select id="queryStatusFilter" onchange="searchQueries()">
+                                <option value="">All Status</option>
+                                <option value="open">Open</option>
+                                <option value="answered">Answered</option>
+                                <option value="resolved">Resolved</option>
+                            </select>
+                        </div>
+                        <div id="queriesList" class="queries-list">
+                            <!-- Questions will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="knowledgeContent" class="qry-content">
+                        <h3>Knowledge Base</h3>
+                        <div class="knowledge-search">
+                            <input type="text" id="knowledgeSearch" placeholder="Search knowledge base..." onkeyup="searchKnowledge()">
+                            <select id="knowledgeCategoryFilter" onchange="searchKnowledge()">
+                                <option value="">All Categories</option>
+                                <option value="businessStrategy">Business Strategy</option>
+                                <option value="funding">Funding & Investment</option>
+                                <option value="technology">Technology</option>
+                                <option value="marketing">Marketing & Sales</option>
+                                <option value="legal">Legal & Compliance</option>
+                                <option value="operations">Operations</option>
+                                <option value="startup">Startup & Entrepreneurship</option>
+                                <option value="scaling">Scaling & Growth</option>
+                            </select>
+                        </div>
+                        <div id="knowledgeList" class="knowledge-list">
+                            <!-- Knowledge base articles will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="myQueriesContent" class="qry-content">
+                        <h3>My Questions</h3>
+                        <div id="myQueriesList" class="my-queries-list">
+                            <!-- User's questions will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="log-panel">
+            <h3 style="margin-bottom: 15px;">Activity Log</h3>
+            <div id="logEntries">
+                </div>
+        </div>
+    </div>
+
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+
+   <script type="module" src="./public/firebase-config.js"></script>
+<script type="module" src="./public/main.js"></script>
+
+</body>
+</html>
